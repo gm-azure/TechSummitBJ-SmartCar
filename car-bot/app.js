@@ -3,7 +3,7 @@ require('dotenv-extended').load();
 
 var restify = require('restify');
 var builder = require('botbuilder');
-
+var carSvc = require('./car-service');
 //Setup the restify server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function(){
@@ -21,17 +21,18 @@ server.post('/api/messages', connector.listen());
 
 //Receive messages from users and respond it
 var bot = new builder.UniversalBot(connector, function(session){
-    session.send("You said: %s.", session.message.text);
-    //session.beginDialog('greetings');
+    //session.send("You said: %s.", session.message.text);
+    session.beginDialog('greetings');
 });
 
 // Ask the user for their name and greet them by name.
 bot.dialog('greetings', [
     function (session) {
-        builder.Prompts.text(session, 'Hi! What is your name?');
+        builder.Prompts.text(session, 'Hi! What command your want to invoke?');
     },
     function (session, results) {
-        session.endDialog(`Hello ${results.response}!`);
+        carSvc.invokeDeviceCommand();
+        session.endDialog(`Command ${results.response} started!`);
     }
 ]);
 

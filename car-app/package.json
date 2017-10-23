@@ -1,0 +1,17 @@
+{
+  "name": "smartcar.devapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Guomin Huang",
+  "license": "MIT",
+  "dependencies": {
+    "azure-iot-device": "^1.1.19",
+    "azure-iot-device-mqtt": "^1.2.0",
+    "dotenv-extended": "^2.0.1"
+  }
+}
