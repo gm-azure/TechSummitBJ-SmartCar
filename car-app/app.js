@@ -39,6 +39,7 @@ function onStart(req, res){
 
     res.send(200, 'Start successfully', operationLogging("DirectMethod onStart"));
 
+    console.log(command.action);
     if (command.action == 'playMusic') {
         Music.play(command.params.music);
         console.log('Playing the music...');
