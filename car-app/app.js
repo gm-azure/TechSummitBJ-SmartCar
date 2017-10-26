@@ -6,9 +6,9 @@ const Client = Device.Client;
 const Message = Device.Message;
 const Protocol = require('azure-iot-device-mqtt').Mqtt;
 const Led = require('./led');
-//pi-gpio使用物理Pin序号
+//rpio使用物理Pin序号
 const Pins = {
-    Led: 16
+    Led: 12  //P12/GPIO18
 };
 
 const connStr = process.env.IOTHUB_DEVICE_CONNSTR;
@@ -27,17 +27,12 @@ function receiveCloudMessage(message) {
     client.complete(message, operationLogging('receiveCloudMessage'));
 }
 
-var led_on = false;
-
 function onStart(req, res){
     console.log('Invoke the method Start(' + JSON.stringify(req.payload) + ')');
 
-    if (led_on) {
-        Led.off(Pins.Led);
-    }
-    else{
-        Led.on(Pins.Led);
-    }
+    Led.on(Pins.Led);
+    Led.delay(1000);
+    Led.off(Pins.Led);
 
     res.send(200, 'Start successfully', operationLogging("DirectMethod onStart"));
 }
