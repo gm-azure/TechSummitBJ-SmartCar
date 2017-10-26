@@ -11,8 +11,10 @@ var jsonParser = bodyParser.json();
 //For application/x-www-form-urlencoded body
 var urlEncodedParser = bodyParser.urlencoded({extended: false});
 
-var port = process.env.PORT || 8080;
+app.use(urlEncodedParser);
+app.use(jsonParser);
 
+var port = process.env.PORT || 8080;
 
 //middleware to log all request
 apiRouter.use(function(req, res, next){
@@ -26,7 +28,8 @@ apiRouter.get('/', function(req, res){
     });
 });
 
-apiRouter.route('/command').get(function(req, res){
+apiRouter.route('/command')
+.get(function(req, res) {
     var data = {
         action: 'start'
     }
@@ -41,6 +44,24 @@ apiRouter.route('/command').get(function(req, res){
 
 
     res.json({message: 'command api'});
+})
+
+.post(function (req, res) {
+
+    console.log(JSON.stringify(req.body));
+    var data = {
+        action: req.body.action
+    }
+    
+    var methodParams = {
+        methodName: 'start',
+        payload: JSON.stringify(data),
+        timeoutInSeconds: 30
+    };
+
+    carIoTSvc.invokeDeviceMethod('smart-car-no-1', methodParams);
+
+    res.json({message: 'command api - post'});
 });
 
 apiRouter.route('/message').get(function(req, res) {
