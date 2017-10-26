@@ -31,6 +31,7 @@ function receiveCloudMessage(message) {
 
 function onStart(req, res){
     console.log('Invoke the method Start(' + JSON.stringify(req.payload) + ')');
+    var command = req.payload;
 
     Led.on(Pins.Led);
     Led.delay(1000);
@@ -38,9 +39,11 @@ function onStart(req, res){
 
     res.send(200, 'Start successfully', operationLogging("DirectMethod onStart"));
 
-    Music.play('when-i-meet-you');
+    if (command.action == 'playMusic') {
+        Music.play(command.params.music);
+        console.log('Playing the music...');
+    }
 
-    console.log('Playing the music...');
 }
 
 //Initialize LED

@@ -31,7 +31,10 @@ apiRouter.get('/', function(req, res){
 apiRouter.route('/command')
 .get(function(req, res) {
     var data = {
-        action: 'start'
+        action: 'playMusic',
+        params: {
+            music: 'my-love-girl-2'
+        }
     }
     
     var methodParams = {
