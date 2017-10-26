@@ -31,7 +31,7 @@ function receiveCloudMessage(message) {
 
 function onStart(req, res){
     console.log('Invoke the method Start(' + JSON.stringify(req.payload) + ')');
-    var command = req.payload;
+    var command = JSON.parse(req.payload);
 
     Led.on(Pins.Led);
     Led.delay(1000);
