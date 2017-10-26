@@ -39,6 +39,8 @@ function onStart(req, res){
     res.send(200, 'Start successfully', operationLogging("DirectMethod onStart"));
 
     Music.play('when-i-meet-you');
+
+    console.log('Playing the music...');
 }
 
 //Initialize LED
