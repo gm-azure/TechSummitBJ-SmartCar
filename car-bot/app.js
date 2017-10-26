@@ -67,7 +67,7 @@ bot.dialog('PlayMusic', [
             music.name = results.response;
         }
 
-        carSvc.playMusic();
+        carSvc.playMusic(music.name);
 
         session.endDialog('Playing the music named "%s"', music.name);
     }

@@ -1,7 +1,7 @@
-var https = require('http');
+var https = require('https');
 
-const _hostname = 'localhost'; //'gmsmartcar-service.azurewebsites.net'
-const _port = 8080; //443
+const _hostname = "gmsmartcar-service.azurewebsites.net";
+const _port = 443;
 
 function _getRequestOptions(_path, _method) {
     return {
@@ -72,11 +72,11 @@ function _invokeDeviceCommand() {
 }
 
 
-function _playMusic(music) {
+function _playMusic(_music) {
     var data = {
         action: 'playMusic',
         params: {
-            music: 'when-i-meet-you'
+            music: _music
         }
     };
 
