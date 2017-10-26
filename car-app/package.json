@@ -12,6 +12,7 @@
   "dependencies": {
     "azure-iot-device": "^1.1.19",
     "azure-iot-device-mqtt": "^1.2.0",
-    "dotenv-extended": "^2.0.1"
+    "dotenv-extended": "^2.0.1",
+    "rpio": "^0.9.19"
   }
 }
