@@ -6,6 +6,8 @@ const Client = Device.Client;
 const Message = Device.Message;
 const Protocol = require('azure-iot-device-mqtt').Mqtt;
 const Led = require('./led');
+const Music = require('./music');
+
 //rpio使用物理Pin序号
 const Pins = {
     Led: 12  //P12/GPIO18
@@ -35,6 +37,8 @@ function onStart(req, res){
     Led.off(Pins.Led);
 
     res.send(200, 'Start successfully', operationLogging("DirectMethod onStart"));
+
+    Music.play('when-i-meet-you');
 }
 
 //Initialize LED
