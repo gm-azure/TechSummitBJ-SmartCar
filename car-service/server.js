@@ -14,6 +14,7 @@ var urlEncodedParser = bodyParser.urlencoded({extended: false});
 app.use(urlEncodedParser);
 app.use(jsonParser);
 
+const deviceId = process.env.IOTHUB_DEVICE_ID;
 var port = process.env.PORT || 8080;
 
 //middleware to log all request
@@ -43,7 +44,7 @@ apiRouter.route('/command')
         timeoutInSeconds: 30
     };
 
-    carIoTSvc.invokeDeviceMethod('smart-car-no-1', methodParams);
+    carIoTSvc.invokeDeviceMethod(deviceId, methodParams);
 
 
     res.json({message: 'command api'});
@@ -52,23 +53,24 @@ apiRouter.route('/command')
 .post(function (req, res) {
 
     console.log(JSON.stringify(req.body));
-    var data = {
-        action: req.body.action
-    }
+    //var data = {
+    //    action: req.body.action,
+    //    params: req.body.params
+    //}
     
     var methodParams = {
         methodName: 'start',
-        payload: JSON.stringify(data),
+        payload: req.body, //JSON.stringify(req.body),
         timeoutInSeconds: 30
     };
 
-    carIoTSvc.invokeDeviceMethod('smart-car-no-1', methodParams);
+    carIoTSvc.invokeDeviceMethod(deviceId, methodParams);
 
     res.json({message: 'command api - post'});
 });
 
 apiRouter.route('/message').get(function(req, res) {
-    carIoTSvc.sendDeviceMessage('smart-car-no-1', 'smart-car-no-1-msg', 'hello smart car no.1');
+    carIoTSvc.sendDeviceMessage(deviceId, 'smart-car-no-1-msg', 'hello smart car no.1');
     res.json({message: 'message api'});
 });
 

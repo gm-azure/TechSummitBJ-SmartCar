@@ -16,7 +16,7 @@ var client = Client.fromConnectionString(connStr);
 function _invokeDeviceMethod(deviceId, methodParams) {
     client.invokeDeviceMethod(deviceId, methodParams, function (error, result) {
         if (error) {
-            console.error('Failed to invoke method \'' + methodName + '\': ' + err.message);
+            console.error('Failed to invoke method \'' + methodParams.methodName + '\': ' + error.message);
         } else {
             console.log(methodParams.methodName + ' on ' + deviceId + ':');
             console.log(JSON.stringify(result, null, 2));
