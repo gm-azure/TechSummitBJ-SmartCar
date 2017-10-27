@@ -68,10 +68,7 @@ bot.dialog('PlayMusic', [
         }
 
         //Play music
-        //carSvc.playMusic(music.name);
-
-        //Move car
-        carSvc.moveCar(music.name);
+        carSvc.playMusic(music.name);
 
         session.endDialog('Playing the music named "%s"', music.name);
     }
@@ -155,4 +152,28 @@ bot.dialog('carTurnRight', function(session, args, next) {
 .triggerAction({
     matches: 'Car.TurnRight',
     confirmPrompt: 'Car will go right, are you sure?'
+});
+
+//
+//Car light on
+//
+bot.dialog('carLightOn', function(session, args, next) {
+    carSvc.carLight('on');
+    session.endDialog('Car light is on.');
+})
+.triggerAction({
+    matches: 'Car.LightOn',
+    confirmPrompt: 'Car light will be on, are you sure?'
+});
+
+//
+//Car light off
+//
+bot.dialog('carLightOff', function(session, args, next) {
+    carSvc.carLight('off');
+    session.endDialog('Car light is off.');
+})
+.triggerAction({
+    matches: 'Car.LightOff',
+    confirmPrompt: 'Car light will be off, are you sure?'
 });

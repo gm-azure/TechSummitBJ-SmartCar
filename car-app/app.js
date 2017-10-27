@@ -6,6 +6,7 @@ const Client = Device.Client;
 const Message = Device.Message;
 const Protocol = require('azure-iot-device-mqtt').Mqtt;
 const Led = require('./led');
+const Light = require('./light');
 const Music = require('./music');
 const Car = require('./car');
 
@@ -50,6 +51,16 @@ function onStart(req, res){
         Music.play(command.params.music);
         console.log('Command[playMusic]: Playing the music...');
     }
+    else if (command.action == 'carLight') {
+        if (command.params.onoff == 'on') {
+            Light.on();
+            console.log('Command[carLight]: Car light is on.');
+        }
+        else {
+            Light.off();
+            console.log('Command[carLight]: Car light is off.');
+        }
+    }
     else if (command.action == 'moveCar') {
         if (command.params.direction == 'forward') {
             Car.goForward();
@@ -76,11 +87,11 @@ function onStart(req, res){
             console.log('Command[moveCar]: Car is turning right.');
         }
     }
-
 }
 
 //Initialize LED
 Led.setup(Pins.Led);
+Light.setup();
 Car.init();
 
 client.open(function(error){

@@ -94,8 +94,20 @@ function _moveCar(_action) {
     _doRequest('/api/command', 'POST', data);
 }
 
+function _carLight(_action) {
+    var data = {
+        action: 'carLight',
+        params: {
+            onoff: _action
+        }
+    };
+
+    _doRequest('/api/command', 'POST', data);
+}
+
 module.exports = {
     invokeDeviceCommand: _invokeDeviceCommand,
     playMusic: _playMusic,
-    moveCar: _moveCar
+    moveCar: _moveCar,
+    carLight: _carLight
 }
