@@ -84,3 +84,75 @@ bot.dialog('PlayMusic', [
     matches: /^(cancel|nevermind)/i,
     confirmPrompt: "Are you sure?"
 });
+
+//
+//Car stop
+//
+bot.dialog('carStop', function(session, args, next) {
+    carSvc.moveCar('stop');
+    session.endDialog('Car is stopped now.');
+})
+.triggerAction({
+    matches: 'Car.Stop',
+    confirmPrompt:'Car will be stopped, are you sure?'
+});
+
+//
+//Car Start
+//
+bot.dialog('carStart', function(session, args, next) {
+    carSvc.moveCar('start');
+    session.endDialog('Car is started now.');
+})
+.triggerAction({
+    matches: 'Car.Start',
+    confirmPrompt: 'Car will be started, are you sure?'
+});
+
+//
+//Car go forward
+//
+bot.dialog('carGoForward', function(session, args, next) {
+    carSvc.moveCar('forward');
+    session.endDialog('Car is going forward now.');
+})
+.triggerAction({
+    matches: 'Car.GoForward',
+    confirmPrompt:'Car will go forward, are you sure?'
+});
+
+//
+//Car go backward
+//
+bot.dialog('carGoBackward', function(session, args, next) {
+    carSvc.moveCar('backward');
+    session.endDialog('Car is going backward now.');
+})
+.triggerAction({
+    matches: 'Car.GoBackward',
+    confirmPrompt: 'Car will go backward, are you sure?'
+});
+
+//
+//Car go left
+//
+bot.dialog('carTurnLeft', function(session, args, next) {
+    carSvc.moveCar('turnLeft');
+    session.endDialog('Car is turning left now.');
+})
+.triggerAction({
+    matches: 'Car.TurnLeft',
+    confirmPrompt: 'Car will go left, are you sure?'
+});
+
+//
+//Car go right
+//
+bot.dialog('carTurnRight', function(session, args, next) {
+    carSvc.moveCar('turnRight');
+    session.endDialog('Car is turning right now.');
+})
+.triggerAction({
+    matches: 'Car.TurnRight',
+    confirmPrompt: 'Car will go right, are you sure?'
+});

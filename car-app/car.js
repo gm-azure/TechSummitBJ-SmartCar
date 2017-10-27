@@ -14,6 +14,13 @@ function _init() {
     GPIO.open(_Pins.MotorIN4, GPIO.OUTPUT, GPIO.HIGH);
 };
 
+function _start() {
+    GPIO.write(_Pins.MotorIN1, GPIO.HIGH);
+    GPIO.write(_Pins.MotorIN2, GPIO.HIGH);
+    GPIO.write(_Pins.MotorIN3, GPIO.HIGH);
+    GPIO.write(_Pins.MotorIN4, GPIO.HIGH);
+}
+
 function _stop() {
     GPIO.write(_Pins.MotorIN1, GPIO.LOW);
     GPIO.write(_Pins.MotorIN2, GPIO.LOW);
@@ -51,6 +58,7 @@ function _turnRight() {
 
 module.exports = {
     init: _init,
+    start: _start,
     stop: _stop,
     goForward: _goForward,
     goBackward: _goBackward,

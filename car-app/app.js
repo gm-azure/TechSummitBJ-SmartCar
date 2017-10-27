@@ -53,15 +53,27 @@ function onStart(req, res){
     else if (command.action == 'moveCar') {
         if (command.params.direction == 'forward') {
             Car.goForward();
-            console.log('Command[moveCar]: Car moving forward...');
+            console.log('Command[moveCar]: Car is going forward...');
         }
         else if (command.params.direction == 'backward') {
             Car.goBackward();
-            console.log('Command[moveCar]: Car moving backward...');
+            console.log('Command[moveCar]: Car is going backward...');
+        }
+        else if (command.params.direction == 'start') {
+            Car.stop();
+            console.log('Command[moveCar]: Car is started.');
         }
         else if (command.params.direction == 'stop') {
             Car.stop();
-            console.log('Command[moveCar]: Car moving stoped.');
+            console.log('Command[moveCar]: Car is stoped.');
+        }
+        else if (command.params.direction == 'turnLeft') {
+            Car.turnLeft();
+            console.log('Command[moveCar]: Car is turning left.');
+        }
+        else if (command.params.direction == 'turnRight') {
+            Car.turnRight();
+            console.log('Command[moveCar]: Car is turning right.');
         }
     }
 
