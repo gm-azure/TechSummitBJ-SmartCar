@@ -7,6 +7,7 @@ const Message = Device.Message;
 const Protocol = require('azure-iot-device-mqtt').Mqtt;
 const Led = require('./led');
 const Music = require('./music');
+const Car = require('./car');
 
 //rpio使用物理Pin序号
 const Pins = {
@@ -45,19 +46,21 @@ function onStart(req, res){
 
     res.send(200, 'Start successfully', operationLogging("DirectMethod onStart"));
 
-    console.log(command.action);
     if (command.action == 'playMusic') {
         Music.play(command.params.music);
         console.log('Command[playMusic]: Playing the music...');
     }
     else if (command.action == 'moveCar') {
         if (command.params.direction == 'forward') {
+            Car.goForward();
             console.log('Command[moveCar]: Car moving forward...');
         }
         else if (command.params.direction == 'backward') {
+            Car.goBackward();
             console.log('Command[moveCar]: Car moving backward...');
         }
         else if (command.params.direction == 'stop') {
+            Car.stop();
             console.log('Command[moveCar]: Car moving stoped.');
         }
     }
@@ -66,6 +69,7 @@ function onStart(req, res){
 
 //Initialize LED
 Led.setup(Pins.Led);
+Car.init();
 
 client.open(function(error){
     if(error){
