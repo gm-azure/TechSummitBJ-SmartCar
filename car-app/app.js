@@ -48,7 +48,18 @@ function onStart(req, res){
     console.log(command.action);
     if (command.action == 'playMusic') {
         Music.play(command.params.music);
-        console.log('Playing the music...');
+        console.log('Command[playMusic]: Playing the music...');
+    }
+    else if (command.action == 'moveCar') {
+        if (command.params.direction == 'forward') {
+            console.log('Command[moveCar]: Car moving forward...');
+        }
+        else if (command.params.direction == 'backward') {
+            console.log('Command[moveCar]: Car moving backward...');
+        }
+        else if (command.params.direction == 'stop') {
+            console.log('Command[moveCar]: Car moving stoped.');
+        }
     }
 
 }

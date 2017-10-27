@@ -67,7 +67,11 @@ bot.dialog('PlayMusic', [
             music.name = results.response;
         }
 
-        carSvc.playMusic(music.name);
+        //Play music
+        //carSvc.playMusic(music.name);
+
+        //Move car
+        carSvc.moveCar(music.name);
 
         session.endDialog('Playing the music named "%s"', music.name);
     }

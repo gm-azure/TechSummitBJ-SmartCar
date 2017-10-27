@@ -83,7 +83,19 @@ function _playMusic(_music) {
     _doRequest('/api/command', 'POST', data);
 }
 
+function _moveCar(_action) {
+    var data = {
+        action: 'moveCar',
+        params: {
+            direction: _action
+        }
+    };
+
+    _doRequest('/api/command', 'POST', data);
+}
+
 module.exports = {
     invokeDeviceCommand: _invokeDeviceCommand,
-    playMusic: _playMusic
+    playMusic: _playMusic,
+    moveCar: _moveCar
 }
