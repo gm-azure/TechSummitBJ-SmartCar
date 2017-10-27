@@ -10,7 +10,13 @@ const Music = require('./music');
 
 //rpio使用物理Pin序号
 const Pins = {
-    Led: 12  //P12/GPIO18
+    Led: 11,         //GPIO17
+    LightLeft: 40,   //GPIO21
+    LightRight: 36,  //GPIO16
+    MotorIN1: 12,    //GPIO18
+    MotorIN2: 16,    //GPIO23
+    MotorIN3: 18,    //GPIO24
+    MotorIN4: 22,    //GPIO25
 };
 
 const connStr = process.env.IOTHUB_DEVICE_CONNSTR;
