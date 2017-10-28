@@ -42,7 +42,7 @@ function promptMessage(session, message) {
         inputHint: builder.InputHint.expectingInput
     });
 }
-
+/*
 bot.on('conversationUpdate', function (message) {
     if (message.membersAdded && message.membersAdded.length > 0) {
         // Say hello
@@ -67,14 +67,13 @@ bot.on('conversationUpdate', function (message) {
         }
     }
 });
-
-
+*/
 
 // Ask the user for their name and greet them by name.
 bot.dialog('greetings', [
     function (session) {
         session.userData.firstRun = true;
-        sendMessage("Hello, I'm Smart Car Bot, Welcome here.");
+        sendMessage(session, "Hello, I'm Smart Car Bot, Welcome here.");
         session.endDialog();
     }
 ])
@@ -87,6 +86,22 @@ bot.dialog('greetings', [
             callback(null, 0.0);
         }
     }
+});
+
+bot.dialog('thanks', function(session){
+    sendMessage(session, 'No problem, you are so welcome.');
+    session.endDialog();
+})
+.triggerAction({
+    matches: /thanks|thank you|thank/i,
+});
+
+bot.dialog('None', function(session) {
+    sendMessage(session, 'Oohs, You can say some command to me to start.');
+    session.endDialog();
+})
+.triggerAction({
+    matches: 'None'
 });
 
 bot.dialog('playMusic', [
@@ -199,7 +214,7 @@ bot.dialog('selectedMusicPlay', function(session, args, next){
 //
 bot.dialog('carStop', function(session, args, next) {
     carSvc.moveCar('stop');
-    sendMessage('OK, the car has stopped.');
+    sendMessage(session, 'OK, the car has stopped.');
     session.endDialog();
 })
 .triggerAction({
@@ -212,7 +227,7 @@ bot.dialog('carStop', function(session, args, next) {
 //
 bot.dialog('carStart', function(session, args, next) {
     carSvc.moveCar('start');
-    sendMessage('Cool, the car has started now.');
+    sendMessage(session, 'Cool, the car has started now.');
     session.endDialog();
 })
 .triggerAction({
@@ -225,7 +240,7 @@ bot.dialog('carStart', function(session, args, next) {
 //
 bot.dialog('carGoForward', function(session, args, next) {
     carSvc.moveCar('forward');
-    sendMessage('Cool, the car is going forward!');
+    sendMessage(session, 'Cool, the car is going forward!');
     session.endDialog();
 })
 .triggerAction({
@@ -238,7 +253,7 @@ bot.dialog('carGoForward', function(session, args, next) {
 //
 bot.dialog('carGoBackward', function(session, args, next) {
     carSvc.moveCar('backward');
-    sendMessage('Cool, the car is going back!');
+    sendMessage(session, 'Cool, the car is going back!');
     session.endDialog();
 })
 .triggerAction({
@@ -281,7 +296,7 @@ bot.dialog('carTurnRL', [
             msg = 'OK, the car is turning left now.';        
         }
 
-        sendMessage(msg);
+        sendMessage(session, msg);
         session.endDialog();        
     }
 ])
@@ -295,7 +310,7 @@ bot.dialog('carTurnRL', [
 //
 bot.dialog('carLightOn', function(session, args, next) {
     carSvc.carLight('on');
-    sendMessage('OK, the car light is on now.')
+    sendMessage(session, 'OK, the car light is on now.')
     session.endDialog();
 })
 .triggerAction({
@@ -308,7 +323,7 @@ bot.dialog('carLightOn', function(session, args, next) {
 //
 bot.dialog('carLightOff', function(session, args, next) {
     carSvc.carLight('off');
-    sendMessage('OK, the car light is off now.')
+    sendMessage(session, 'OK, the car light is off now.')
     session.endDialog();
 })
 .triggerAction({
