@@ -31,7 +31,18 @@ var bot = new builder.UniversalBot(connector, function(session){
 var luisModelUrl = process.env.LUIS_MODEL_URL;
 bot.recognizer(new builder.LuisRecognizer(luisModelUrl));
 
-/*
+function sendMessage(session, message) {
+    session.say(message, message);
+}
+
+function promptMessage(session, message) {
+    builder.Prompts.text(session, message, {
+        speak: message,
+        retrySpeak: message,
+        inputHint: builder.InputHint.expectingInput
+    });
+}
+
 bot.on('conversationUpdate', function (message) {
     if (message.membersAdded && message.membersAdded.length > 0) {
         // Say hello
@@ -39,7 +50,7 @@ bot.on('conversationUpdate', function (message) {
         var txt = isGroup ? "Hello everyone!" : "Hello,";
         var reply = new builder.Message()
                 .address(message.address)
-                .text(txt + " I'm Smart Car Bot.");
+                .text(txt + " I'm Smart Car Bot. Welcome here");
         bot.send(reply);
     } else if (message.membersRemoved) {
         // See if bot was removed
@@ -56,14 +67,15 @@ bot.on('conversationUpdate', function (message) {
         }
     }
 });
-*/
+
 
 
 // Ask the user for their name and greet them by name.
 bot.dialog('greetings', [
     function (session) {
         session.userData.firstRun = true;
-        session.send("Hello, I'm Smart Car Bot.").endDialog();
+        sendMessage("Hello, I'm Smart Car Bot, Welcome here.");
+        session.endDialog();
     }
 ])
 .triggerAction({
@@ -187,7 +199,8 @@ bot.dialog('selectedMusicPlay', function(session, args, next){
 //
 bot.dialog('carStop', function(session, args, next) {
     carSvc.moveCar('stop');
-    session.endDialog('Car is stopped now.');
+    sendMessage('OK, the car has stopped.');
+    session.endDialog();
 })
 .triggerAction({
     matches: 'Car.Stop',
@@ -199,7 +212,8 @@ bot.dialog('carStop', function(session, args, next) {
 //
 bot.dialog('carStart', function(session, args, next) {
     carSvc.moveCar('start');
-    session.endDialog('Car is started now.');
+    sendMessage('Cool, the car has started now.');
+    session.endDialog();
 })
 .triggerAction({
     matches: 'Car.Start',
@@ -211,11 +225,12 @@ bot.dialog('carStart', function(session, args, next) {
 //
 bot.dialog('carGoForward', function(session, args, next) {
     carSvc.moveCar('forward');
-    session.endDialog('Car is going forward now.');
+    sendMessage('Cool, the car is going forward!');
+    session.endDialog();
 })
 .triggerAction({
     matches: 'Car.GoForward',
-    confirmPrompt:'Car will go forward, are you sure?'
+    confirmPrompt:'Car will stop forward, are you sure?'
 });
 
 //
@@ -223,11 +238,12 @@ bot.dialog('carGoForward', function(session, args, next) {
 //
 bot.dialog('carGoBackward', function(session, args, next) {
     carSvc.moveCar('backward');
-    session.endDialog('Car is going backward now.');
+    sendMessage('Cool, the car is going back!');
+    session.endDialog();
 })
 .triggerAction({
     matches: 'Car.GoBackward',
-    confirmPrompt: 'Car will go backward, are you sure?'
+    confirmPrompt: 'Car will stop backward, are you sure?'
 });
 
 //
@@ -243,11 +259,11 @@ bot.dialog('carTurnRL', [
             next();
         }
         else {
-            builder.Prompts.text(session,"Please tell me the direction(right or left).");
+            promptMessage(session, "Please tell me the direction, right or left?")
         }
     },
     function(session, results) {
-        var msg = 'no direction, will not turn.';
+        var msg = 'hi, no direction there, the car will not turn.';
         var direction = null;
         if (results.response) {
             direction = results.response;
@@ -258,14 +274,15 @@ bot.dialog('carTurnRL', [
 
         if (/right/i.exec(direction)) {
             carSvc.moveCar('turnRight');
-            msg = 'Car is turning right now.';
+            msg = 'OK, the car is turning right now.';
         }
         else if (/left/i.exec(direction)) {
             carSvc.moveCar('turnLeft');
-            msg = 'Car is turning left now.';        
+            msg = 'OK, the car is turning left now.';        
         }
 
-        session.endDialog(msg);        
+        sendMessage(msg);
+        session.endDialog();        
     }
 ])
 .triggerAction({
@@ -278,11 +295,12 @@ bot.dialog('carTurnRL', [
 //
 bot.dialog('carLightOn', function(session, args, next) {
     carSvc.carLight('on');
-    session.endDialog('Sure, I will turn on car light now.');
+    sendMessage('OK, the car light is on now.')
+    session.endDialog();
 })
 .triggerAction({
     matches: 'Car.LightOn',
-    confirmPrompt: 'Car light will be on, are you sure?'
+    confirmPrompt: 'Car light will not turn on, are you sure?'
 });
 
 //
@@ -290,9 +308,10 @@ bot.dialog('carLightOn', function(session, args, next) {
 //
 bot.dialog('carLightOff', function(session, args, next) {
     carSvc.carLight('off');
-    session.endDialog('Sure, I will turn off car light now.');
+    sendMessage('OK, the car light is off now.')
+    session.endDialog();
 })
 .triggerAction({
     matches: 'Car.LightOff',
-    confirmPrompt: 'Car light will be off, are you sure?'
+    confirmPrompt: 'Car light will not turn off, are you sure?'
 });
