@@ -58,6 +58,7 @@ bot.on('conversationUpdate', function (message) {
 });
 */
 
+
 // Ask the user for their name and greet them by name.
 bot.dialog('greetings', [
     function (session) {
@@ -78,8 +79,11 @@ bot.dialog('greetings', [
 
 bot.dialog('playMusic', [
     function (session, args, next) {
+        if (!args) {
+            session.endDialog();
+            return;
+        }
 
-        console.log('dialog-playMusic-Message:'+session.message.text);
         var intent = args.intent;
         var musicName = builder.EntityRecognizer.findEntity(intent.entities, 'Music.Name');
         //save the music info in session dialog data
@@ -91,7 +95,11 @@ bot.dialog('playMusic', [
         var music = session.dialogData.music;
         if ( !music.name ) {
             //builder.Prompts.text(session, 'Which song you would like me to play?');
-            builder.Prompts.text(session, 'Would you like to choose a song or tell me the song name?');
+            builder.Prompts.text(session, 'Would you like to choose a song or tell me the song name?', {
+                speak: 'Would you like to choose a song or tell me the song name?',
+                retrySpeak: 'Would you like to choose a song or tell me the song name?',
+                inputHint: builder.InputHint.expectingInput
+            });
         }
         else {
             next();
@@ -268,7 +276,7 @@ bot.dialog('carTurnRL', [
 //
 bot.dialog('carLightOn', function(session, args, next) {
     carSvc.carLight('on');
-    session.endDialog('Car light is on.');
+    session.endDialog('Sure, I will turn on car light now.');
 })
 .triggerAction({
     matches: 'Car.LightOn',
@@ -280,7 +288,7 @@ bot.dialog('carLightOn', function(session, args, next) {
 //
 bot.dialog('carLightOff', function(session, args, next) {
     carSvc.carLight('off');
-    session.endDialog('Car light is off.');
+    session.endDialog('Sure, I will turn off car light now.');
 })
 .triggerAction({
     matches: 'Car.LightOff',
