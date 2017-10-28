@@ -16,8 +16,8 @@ function _getRequestOptions(_path, _method) {
 }
 
 function _requestCallback(res) {
-    console.log('Status: ' + res.statusCode);
-    console.log('Headers: ' + JSON.stringify(res.headers));
+    //console.log('Status: ' + res.statusCode);
+    //console.log('Headers: ' + JSON.stringify(res.headers));
     
     res.setEncoding('utf8');
     res.on('data', function (body) {

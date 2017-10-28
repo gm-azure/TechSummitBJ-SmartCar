@@ -142,13 +142,17 @@ bot.dialog('playMusic', [
             }
             else {
                 carSvc.playMusic(musicRepo.searchMusic(results.response));
-                session.endDialog('Playing the music named "%s"', results.response);                
+                var message = 'OK, The song ' + results.response + ' is playing now.';
+                session.say(message, message);
+                session.endDialog();                
             }
         }
         else {
             //Play music
             carSvc.playMusic(musicRepo.searchMusic(music.name));
-            session.endDialog('Playing the music named "%s"', music.name);
+            var message = 'OK, The song ' + music.name + ' is playing now.';
+            session.say(message, message);
+            session.endDialog();
         }
     }
 ])
@@ -165,14 +169,12 @@ bot.dialog('playMusic', [
 });
 
 bot.dialog('selectedMusicPlay', function(session, args, next){
-    console.log("dialog-selectMusicPlay");
-   
     if (args.data) {
         carSvc.playMusic(args.data);
-        session.send('Your selected song is playing now.');
+        session.say('OK, the song you selected is playing now', 'OK, the song you selected is playing now');
     }
     else {
-        session.send('please select one of the songs listed above.')
+        session.say('please select one of the songs listed above.');
     }
 
     session.endDialog();
