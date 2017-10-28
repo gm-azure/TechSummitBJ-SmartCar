@@ -4,6 +4,7 @@ require('dotenv-extended').load();
 var restify = require('restify');
 var builder = require('botbuilder');
 var carSvc = require('./car-service');
+var musicRepo = require('./music');
 //Setup the restify server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function(){
@@ -30,19 +31,55 @@ var bot = new builder.UniversalBot(connector, function(session){
 var luisModelUrl = process.env.LUIS_MODEL_URL;
 bot.recognizer(new builder.LuisRecognizer(luisModelUrl));
 
+/*
+bot.on('conversationUpdate', function (message) {
+    if (message.membersAdded && message.membersAdded.length > 0) {
+        // Say hello
+        var isGroup = message.address.conversation.isGroup;
+        var txt = isGroup ? "Hello everyone!" : "Hello,";
+        var reply = new builder.Message()
+                .address(message.address)
+                .text(txt + " I'm Smart Car Bot.");
+        bot.send(reply);
+    } else if (message.membersRemoved) {
+        // See if bot was removed
+        var botId = message.address.bot.id;
+        for (var i = 0; i < message.membersRemoved.length; i++) {
+            if (message.membersRemoved[i].id === botId) {
+                // Say goodbye
+                var reply = new builder.Message()
+                        .address(message.address)
+                        .text("Goodbye");
+                bot.send(reply);
+                break;
+            }
+        }
+    }
+});
+*/
+
 // Ask the user for their name and greet them by name.
 bot.dialog('greetings', [
     function (session) {
-        builder.Prompts.text(session, 'Hi! What command your want to invoke?');
-    },
-    function (session, results) {
-        //carSvc.invokeDeviceCommand();
-        session.endDialog(`Command ${results.response} started!`);
+        session.userData.firstRun = true;
+        session.send("Hello, I'm Smart Car Bot.").endDialog();
     }
-]);
+])
+.triggerAction({
+    onFindAction: function (context, callback) {
+        if (!context.userData.firstRun) {
+            callback(null, 1.1);
+        }
+        else {
+            callback(null, 0.0);
+        }
+    }
+});
 
-bot.dialog('PlayMusic', [
+bot.dialog('playMusic', [
     function (session, args, next) {
+
+        console.log('dialog-playMusic-Message:'+session.message.text);
         var intent = args.intent;
         var musicName = builder.EntityRecognizer.findEntity(intent.entities, 'Music.Name');
         //save the music info in session dialog data
@@ -53,34 +90,87 @@ bot.dialog('PlayMusic', [
 
         var music = session.dialogData.music;
         if ( !music.name ) {
-            builder.Prompts.text(session, 'Which song you would like me to play?');
+            //builder.Prompts.text(session, 'Which song you would like me to play?');
+            builder.Prompts.text(session, 'Would you like to choose a song or tell me the song name?');
         }
         else {
             next();
         }
     },
-    function (session, results) {
+    function (session, results, next) {
         var music = session.dialogData.music;
 
         //Get music info from user's response?
         if ( results.response ) {
-            music.name = results.response;
+            var choose = /choose|select/i.exec(results.response)
+            if (choose) {              
+                var message = new builder.Message(session);
+                message.attachmentLayout =(builder.AttachmentLayout.carousel);
+                message.attachments([
+                    new builder.HeroCard(session)
+                        .title("当我遇见你")
+                        .subtitle("Andy Lau")
+                        .text("When I meet you...")
+                        .images([
+                            builder.CardImage.create(session, 'https://gmsmartcarstorage.blob.core.windows.net/images/musiccover.png')
+                        ])
+                        .buttons([
+                            //builder.CardAction.postBack(session, 'play music when-i-meet-you', 'Play this one') //post back this message
+                            builder.CardAction.dialogAction(session, 'selectMusicPlayAction', 'when-i-meet-you', 'Play')
+                        ]),
+                    new builder.HeroCard(session)
+                        .title("对你的爱越深就越来越心痛")
+                        .subtitle("Jacky Zhang")
+                        .text("When I meet you...")
+                        .images([
+                            builder.CardImage.create(session, 'https://gmsmartcarstorage.blob.core.windows.net/images/musiccover.png')
+                        ])
+                        .buttons([
+                            //builder.CardAction.imBack(session, 'play music when-i-meet-you', 'Play this one'), //post back this message
+                            builder.CardAction.dialogAction(session, 'selectMusicPlayAction', 'my-deep-love', 'Play')
+                        ]),
+                ]);
+                session.send(message);
+            }
+            else {
+                carSvc.playMusic(musicRepo.searchMusic(results.response));
+                session.endDialog('Playing the music named "%s"', results.response);                
+            }
         }
-
-        //Play music
-        carSvc.playMusic(music.name);
-
-        session.endDialog('Playing the music named "%s"', music.name);
+        else {
+            //Play music
+            carSvc.playMusic(musicRepo.searchMusic(music.name));
+            session.endDialog('Playing the music named "%s"', music.name);
+        }
     }
 ])
 .triggerAction({
     matches: 'Entertainment.PlayMusic',
-    confirmPrompt: "This will play an music for you. Are you sure?"
+    confirmPrompt: "You are leaving the music play, sure?",
 })
 .cancelAction('CancelPlayMusic', "Music canceled", {
     matches: /^(cancel|nevermind)/i,
     confirmPrompt: "Are you sure?"
+})
+.beginDialogAction('selectMusicPlayAction', 'selectedMusicPlay', {
+    matches:/^(play music)/i
 });
+
+bot.dialog('selectedMusicPlay', function(session, args, next){
+    console.log("dialog-selectMusicPlay");
+   
+    if (args.data) {
+        carSvc.playMusic(args.data);
+        session.send('Your selected song is playing now.');
+    }
+    else {
+        session.send('please select one of the songs listed above.')
+    }
+
+    session.endDialog();
+});
+
+
 
 //
 //Car stop
@@ -131,27 +221,46 @@ bot.dialog('carGoBackward', function(session, args, next) {
 });
 
 //
-//Car go left
-//
-bot.dialog('carTurnLeft', function(session, args, next) {
-    carSvc.moveCar('turnLeft');
-    session.endDialog('Car is turning left now.');
-})
-.triggerAction({
-    matches: 'Car.TurnLeft',
-    confirmPrompt: 'Car will go left, are you sure?'
-});
-
-//
 //Car go right
 //
-bot.dialog('carTurnRight', function(session, args, next) {
-    carSvc.moveCar('turnRight');
-    session.endDialog('Car is turning right now.');
-})
+bot.dialog('carTurnRL', [
+    function(session, args, next) {
+        var intent = args.intent;
+        var direction = builder.EntityRecognizer.findEntity(intent.entities, 'Car.Direction');
+
+        if (direction) {
+            session.dialogData.carDir = direction.entity;
+            next();
+        }
+        else {
+            builder.Prompts.text(session,"Please tell me the direction(right or left).");
+        }
+    },
+    function(session, results) {
+        var msg = 'no direction, will not turn.';
+        var direction = null;
+        if (results.response) {
+            direction = results.response;
+        }
+        else {
+            direction = session.dialogData.carDir;
+        }
+
+        if (/right/i.exec(direction)) {
+            carSvc.moveCar('turnRight');
+            msg = 'Car is turning right now.';
+        }
+        else if (/left/i.exec(direction)) {
+            carSvc.moveCar('turnLeft');
+            msg = 'Car is turning left now.';        
+        }
+
+        session.endDialog(msg);        
+    }
+])
 .triggerAction({
-    matches: 'Car.TurnRight',
-    confirmPrompt: 'Car will go right, are you sure?'
+    matches: 'Car.TurnRL',
+    confirmPrompt: 'Car will cancel turning, sure?'
 });
 
 //

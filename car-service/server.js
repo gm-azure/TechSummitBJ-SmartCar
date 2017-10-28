@@ -3,6 +3,7 @@ require('dotenv-extended').load();
 var carIoTSvc = require('./car-iot-service');
 var express = require('express');
 var bodyParser = require('body-parser');
+var path = require('path');
 var app = express();
 var apiRouter = express.Router();
 
@@ -77,7 +78,8 @@ apiRouter.route('/message').get(function(req, res) {
 app.use('/api', apiRouter);
 
 app.route('/').get(function(req, res){
-    res.send("Home page for smart car service.");
+    //res.send("Home page for smart car service.");
+    res.sendfile(path.join(__dirname+'/index.html'));
 });
 
 app.listen(port);
