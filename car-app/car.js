@@ -15,6 +15,8 @@ function _init() {
 };
 
 function _start() {
+    _stop();
+    GPIO.msleep(500);
     GPIO.write(_Pins.MotorIN1, GPIO.HIGH);
     GPIO.write(_Pins.MotorIN2, GPIO.HIGH);
     GPIO.write(_Pins.MotorIN3, GPIO.HIGH);
@@ -36,6 +38,8 @@ function _goForward() {
 };
 
 function _goBackward() {
+    _stop();
+    GPIO.msleep(500);
     GPIO.write(_Pins.MotorIN1, GPIO.LOW);
     GPIO.write(_Pins.MotorIN2, GPIO.HIGH);
     GPIO.write(_Pins.MotorIN3, GPIO.LOW);
@@ -43,6 +47,8 @@ function _goBackward() {
 };
 
 function _turnLeft() {
+    _stop();
+    GPIO.msleep(500);
     GPIO.write(_Pins.MotorIN1, GPIO.LOW);
     GPIO.write(_Pins.MotorIN2, GPIO.LOW);
     GPIO.write(_Pins.MotorIN3, GPIO.HIGH);
@@ -50,6 +56,8 @@ function _turnLeft() {
 };
 
 function _turnRight() {
+    _stop();
+    GPIO.msleep(500);
     GPIO.write(_Pins.MotorIN1, GPIO.HIGH);
     GPIO.write(_Pins.MotorIN2, GPIO.LOW);
     GPIO.write(_Pins.MotorIN3, GPIO.LOW);

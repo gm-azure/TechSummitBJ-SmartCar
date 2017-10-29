@@ -71,7 +71,7 @@ function onStart(req, res){
             console.log('Command[moveCar]: Car is going backward...');
         }
         else if (command.params.direction == 'start') {
-            Car.stop();
+            Car.start();
             console.log('Command[moveCar]: Car is started.');
         }
         else if (command.params.direction == 'stop') {
